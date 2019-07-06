@@ -1,0 +1,13 @@
+<BODY>
+Rango says: Hello World!
+{% if country_list %}
+        <UL>
+        {% for c in country_list %}
+                <LI>{{ c.name }}</LI>
+        {% endfor %}
+        </UL>
+{% else %}
+        <P>No categories at present.</P>
+{% endif %}
+
+</BODY>

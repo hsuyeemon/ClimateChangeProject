@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from app import views
 
 urlpatterns = [
 	path('app/', include('app.urls')),
+    path('add_country/', views.add_country, name='add-country'),
+    path('get_country/', views.get_country, name='get_country'),
+    path('delete_country/', views.delete_country, name='delete_country'),
     #path('admin/', admin.site.urls),
 ]
