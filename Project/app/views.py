@@ -27,7 +27,9 @@ def add_country(request):
      #return HttpResponse("DONE")
 
 def get_country(request):
-    return render( request, 'country.html',{'country': Country.nodes.all()})
+    a= [0,1,2,3]
+    b= {'a':0,'b':1}
+    return render( request, 'country.html',{'country': Country.nodes.all(),'list':a,'dict':b})
 
 def delete_country(request):
     submitted = False
