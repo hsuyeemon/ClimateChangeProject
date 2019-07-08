@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 from neomodel import config,StructuredNode, StringProperty, DateProperty,UniqueIdProperty
 from django_neomodel import DjangoNode
+from neomodel import db
 
 #class Person(StructuredNode):
     #uid = UniqueIdProperty()
@@ -29,5 +30,6 @@ class Country(DjangoNode):
 
 	class Meta:
     		app_label = 'app'
-    
+
+
 
