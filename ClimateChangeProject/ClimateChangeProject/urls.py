@@ -19,10 +19,8 @@ from app import views
 
 urlpatterns = [
 	path('app/', include('app.urls')),
-    path('add_country/', views.add_country, name='add-country'),
-    path('get_country/', views.get_country, name='get_country'),
-    path('delete_country/', views.delete_country, name='delete_country'),
-    #path('admin/', admin.site.urls),
-    path('ClimateChange/', include('ClimateChange.urls')),
-
+    path('add_temperature/', views.add_temperature, name='add-temperature'),
+    path('get_temperature/', views.get_temperature, name='get_temperature'),
+    path('delete_temperature/', views.delete_temperature, name='delete_temperature'),
+    path('update_temperature/', views.update_temperature, name='update_temperature'),
 ]
