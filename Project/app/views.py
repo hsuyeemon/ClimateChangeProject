@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import Country
 from .form import CountryForm
+from neomodel import db
 
 
 def index(request):
@@ -29,7 +30,13 @@ def add_country(request):
 def get_country(request):
     a= [0,1,2,3]
     b= {'a':0,'b':1}
-    return render( request, 'country.html',{'country': Country.nodes.all(),'list':a,'dict':b})
+    name ="Myanmar"
+    query = "Match(n:Country) where n.name='"+name+"' Return n"
+    
+    results, meta = db.cypher_query(query)
+    country = [Country.inflate(row[0]) for row in results]
+
+    return render( request, 'country.html',{'country':country,'list':a,'dict':b})
 
 def delete_country(request):
     submitted = False

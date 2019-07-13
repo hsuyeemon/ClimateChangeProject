@@ -7,3 +7,4 @@ class CountryForm(ModelForm):
       class Meta:
           model = Country
           fields = ['name']
+
