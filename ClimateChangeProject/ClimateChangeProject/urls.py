@@ -21,6 +21,8 @@ urlpatterns = [
 	path('app/', include('app.urls')),
     path('add_temperature/', views.add_temperature, name='add-temperature'),
     path('get_temperature/', views.get_temperature, name='get_temperature'),
+    path('get_temperature_by_year_range/', views.get_temperature_by_year_range, name='get_temperature_by_year_range'),
+    path('get_temperature_for_country/', views.get_temperature_for_country, name='get_temperature_for_country'),
     path('delete_temperature/', views.delete_temperature, name='delete_temperature'),
     path('update_temperature/', views.update_temperature, name='update_temperature'),
 ]

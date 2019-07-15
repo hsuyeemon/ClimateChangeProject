@@ -73,6 +73,14 @@ def get_temperature(request):
 
 	return HttpResponse("get_temperature")
 
+def get_temperature_by_year_range(request):
+
+	return HttpResponse("get_temperature_by_year_range")
+
+def get_temperature_for_country(request):
+
+	return HttpResponse("get_temperature_for_country")
+
 def update_temperature(request):
 
 	return HttpResponse("update_temperature")
