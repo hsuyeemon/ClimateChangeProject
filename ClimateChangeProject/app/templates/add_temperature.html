@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+  
+{% block title %}Add Country{% endblock title %}
+ 
+{% block content %}
+<h1>Add temperature to our database</h1>
+  
+  {% if submitted %}
+      <p class="success">
+         Temperature was submitted successfully. Thank you.
+     </p>
+ 
+ {% else %}
+     <form action="" method="post" novalidate>
+     <table>
+         {{ form.as_table }}
+         <tr>
+             <td>&nbsp;</td>
+             <td><input type="text" name="temperature"></td>
+             <td><input type="date" name="date"></td>
+             <td><input type="text" name="country"></td>
+             <td><input type="submit" value="Submit"></td>
+         </tr>
+     </table>
+     {% csrf_token %}
+     </form>
+ {% endif %}
+ {% endblock content %}
