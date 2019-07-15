@@ -1,0 +1,191 @@
+
+First,create indexes for the nodes Year,Month,Day
+
+
+//Create Time Tree Indexes
+
+
+CREATE INDEX ON :Year(value);
+CREATE INDEX ON :Month(value);
+CREATE INDEX ON :Day(value);
+
+
+//Create index for temperature
+
+CREATE INDEX ON :Avg_temperature(value);
+CREATE INDEX ON :Country(value);
+
+
+//Create Time Tree with Day Depth :Year start from 1990 to 2013
+
+WITH range(1990, 2013) AS years, range(1,12) AS months 
+FOREACH(year IN years | 
+    CREATE (y:Year {value: year}) 
+    FOREACH(month IN months | 
+        CREATE (m:Month {value: month}) 
+        MERGE (y)-[:CONTAINS]->(m)))
+        
+
+
+
+//Connect Years Sequentially
+MATCH (year:Year) WITH year 
+ORDER BY year.value 
+WITH collect(year) AS years 
+FOREACH(i in RANGE(0, length(years)-2) | 
+    FOREACH(year1 in [years[i]] | 
+        FOREACH(year2 in [years[i+1]] | 
+            CREATE UNIQUE (year1)-[:NEXT]->(year2))));
+
+
+//Connect Months Sequentially
+MATCH (year:Year)-[:CONTAINS]->(month)
+WITH year, month
+ORDER BY year.value, month.value
+WITH collect(month) AS months
+FOREACH(i in RANGE(0, length(months)-2) |
+    FOREACH(month1 in [months[i]] |
+        FOREACH(month2 in [months[i+1]] |
+            CREATE UNIQUE (month1)-[:NEXT]->(month2))));
+
+
+//Lookup Time Tree example with Year, Month and Day Showing Next Relationship Across Months
+MATCH (y:Year) WHERE y.value = 2012 OR y.value = 2013 WITH y
+MATCH (y)-[:CONTAINS]->(m:Month) WHERE m.value = 1 OR m.value = 12 WITH y, m
+RETURN y, m;
+
+
+
+//Import TEMPERATURE DATA
+//USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM "file:///temp.csv" AS row WITH row LIMIT 1000
+//Exclude Rows with Incomplete Key Data Elements
+WHERE row.Temperature IS NOT NULL AND row.Country IS NOT NULL AND row.Date IS NOT NULL
+
+
+WITH row, toInt(SUBSTRING(row.Date, 0, 4)) AS y
+MATCH (year:Year {value: y})
+WITH row, year, toInt(SUBSTRING(row.Date, 5, 2)) AS m
+MATCH (year)-[:CONTAINS]->(month:Month {value: m})
+WITH row, month, toInt(SUBSTRING(row.Date, 8,2)) AS d
+CREATE (day:Day {value : d})
+MERGE (month)-[:CONTAINS]->(day)
+WITH row,month,day
+MATCH (month)-[:CONTAINS]->(day)
+WITH row, day MERGE (temp:Avg_temperature {avg_temp: row.Date}) ON CREATE SET temp.country=
+row.Country,temp.Date=toString(row.Date),temp.Temperature = toInt(row.Temperature)
+MERGE (country:Country {name: row.Country})
+MERGE (temp)-[:TEMP_OF]->(country)
+MERGE (temp)-[:TEMP_AT]->(day)
+return temp;
+
+
+
+//SELECT the temperature of myanmar
+
+MATCH (n:Avg_temperature)-[:TEMP_OF]->(c:Country) WHERE c.name="Myanmar" RETURN DISTINCT n 
+
+
+//SELECT the temperature of the day
+
+MATCH (n:Avg_temperature)-[:TEMP_AT]->(d:Day{})<-[:CONTAINS*]-(m:Month{value:)
+
+
+MATCH (y: Year {value:2015})
+WITH y 
+MATCH (y)-[:CONTAINS]->(m:Month{value:1})
+WITH y,m
+MATCH (m)-[:CONTAINS]->(d:Day{value:1})
+WITH y,m,d
+MATCH (c:COUNTRY{name:"Myanmar"})
+WITH y,m,d,c
+MATCH t=(d)-[:TEMP_AT*]->()-[:TEMP_OF]->(c)
+RETURN nodes(t)
+
+//Assumption : Monthly data collected
+
+//day properties should be added when data is loaded
+
+
+
+Add Temperature
+Update Temperature
+Delete Temperature
+
+
+Retrieve....
+
+Year(Range) - one Country
+
+All Country - temp of a selected year
+
+
+Reference :  https://www.graphgrid.com/modeling-time-series-data-with-neo4j/
+
+
+//SELECT the temperature at specified day,month,year and country
+
+MATCH (y: Year {value:2011})
+WITH y
+MATCH (y)-[:CONTAINS]->(m:Month{value:1})
+WITH y,m
+MATCH (m)-[:CONTAINS]->(d:Day{value:1})
+WITH y,m,d
+MATCH (c:Country{name:"Myanmar"})
+WITH y,m,d,c
+MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c)
+RETURN t
+
+
+//1. SELECT the temperature at specified year range,month,day and country
+
+MATCH (y: Year) where y.value<=2012 AND y.value>=2011
+WITH y
+MATCH (y)-[:CONTAINS]->(m:Month) WHERE m.value = 1 OR m.value = 12
+WITH y,m
+MATCH (m)-[:CONTAINS]->(d:Day{value:1})
+WITH y,m,d
+MATCH (c:Country) WHERE c.name = "Myanmar" OR c.name= "Thailand"
+WITH y,m,d,c
+MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c)
+RETURN t
+    
+
+
+
+//2. SELECT temperatures of all countries at a specified year
+
+MATCH (y: Year {value:2011})
+WITH y
+MATCH (y-[:CONTAINS]->()-[:CONTAINS]->(d:Day)
+WITH y,d
+MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-(MATCH(c:Country))
+RETURN t
+
+
+
+//3. Country 's averagage temperature in a year of a country
+MATCH (y: Year {value:2011})
+WITH y
+MATCH (y)-[:CONTAINS]->()-[:CONTAINS]->(d:Day)
+WITH y,d
+MATCH (c:Country) WHERE c.name = "Myanmar"
+WITH y,d,c
+MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c)
+RETURN avg(t.Temperature)
+    
+//for separated country ,separated temperature
+
+
+
+
+CREATE (a:TEST{p1:"1"})
+CREATE (b:TEST2{t1:"1"})
+
+
+MATCH (n:TEST) WHERE n.p1="1"
+WITH n
+MATCH (m:TEST2) WHERE m.t1="1"
+WITH n,m
+CREATE (n)-[:RS]->(m)
+
