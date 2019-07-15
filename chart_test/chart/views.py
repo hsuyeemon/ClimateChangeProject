@@ -9,7 +9,9 @@ from .fusioncharts import FusionCharts
 
 def chart(request):
     # Create an object for the column2d chart using the FusionCharts class constructor
-    column2d = FusionCharts("column2d", "ex2" , "100%", "400", "chart-1", "json",
+
+    #first arg : column chart => column2d, piechart=>pie2d,line =>line
+    column2d = FusionCharts("line", "ex2" , "100%", "400", "chart-1", "json",
         # The data is passed as a string in the `dataSource` as parameter.
                         """{
                             "chart": {
