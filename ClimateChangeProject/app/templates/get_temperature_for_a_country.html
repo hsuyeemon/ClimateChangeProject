@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+  
+{% block title %}{{ title }}{% endblock title %}
+  
+{% block content %}
+	<h1>Temperature</h1>
+	<p>{{ results }}</p>
+	<br>
+
+	{% for key, values in dic.items %}
+    <tr>
+        <td>{{key}}</td>
+        
+        <td>{{values}}</td>
+    </tr>
+    {% endfor %}
+{% endblock content %}
