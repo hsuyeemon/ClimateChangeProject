@@ -94,11 +94,7 @@ def get_temperature(request):
 def get_temperature_for_all_country(request):
 
 	year = 2011
-<<<<<<< HEAD
-	query = "MATCH (c:Country) WITH collect(c) AS countries UNWIND countries as country MATCH(y:Year{value:toInteger("+str(year)+")})-[:CONTAINS]->(m:Month)-[:CONTAINS]->(d:Day)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(country) WITH avg(toInteger(t.Temperature)) as tavg,country RETURN country.name,tavg"
-	results,meta = db.cypher_query(query)
-	return HttpResponse(results)
-=======
+
 	query = "MATCH (c:Country) WITH collect(c) AS countries UNWIND countries as country MATCH(y:Year{value:toInteger("+str(year)+")})-[:CONTAINS]->(m:Month)-[:CONTAINS]->(d:Day)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(country) WITH round(100*avg(toInteger(t.Temperature)))/100 as tavg,country RETURN {label:country.name,value:tavg}"
 	results,meta = db.cypher_query(query)
 	#print(results)
@@ -110,7 +106,7 @@ def get_temperature_for_all_country(request):
 	my_json_string = json.dumps(map_list)
 
 	#params(type,name,width,height,chart id, data type)
-	column2d = FusionCharts("column2d", "Chart1" , "50%", "400", "chart-1", "json",
+	column2d = FusionCharts("column2d", "Chart1" , "100%", "400", "chart-1", "json",
     
     # The data is passed as a string in the `dataSource` as parameter.
                         """{
@@ -121,25 +117,26 @@ def get_temperature_for_all_country(request):
                                 "showPercentInTooltip" : "0",
                                 "numberSuffix" : " \N{DEGREE SIGN}C",
                                 "enableMultiSlicing":"0",
-                                "theme": "fusion"
+                                "theme": "fusion",
+                                "exportEnabled" : "1",
+                                "showLabels": "1" ,
+                                "labelDisplay": "rotate",
+        						"slantLabel": "1",
+        						"xAxisName": "year",
+        						"yAxisName": "Temperature {br}(In celsius)" 
                             },
                             "data": """+ my_json_string +"""}""") 
 	print(column2d)
 	# returning complete JavaScript and HTML code, which is used to generate chart in the browsers.
-	return render(request, 'charts_test.html', {'output' : column2d.render()})
->>>>>>> 7e1fc2e2c2b4507a1209a53c54d57a0cc9a1538d
+	return render(request, 'charts.html', {'output1' : column2d.render()})
 
 def get_temperature_for_country(request):
 
 	country = "Myanmar"
-	year1 = 2010
-	year2 = 2012
+	year1 = 1990
+	year2 = 2013
 
-<<<<<<< HEAD
-	query = "MATCH (year:Year) WHERE year.value>=toInteger("+str(year1)+") AND year.value<=toInteger("+str(year2)+") WITH collect(year) AS years UNWIND years as y MATCH (y)-[:CONTAINS]->(m:Month) WITH y,m MATCH (m)-[:CONTAINS]->(d:Day) WITH y,m,d MATCH (c:Country) WHERE c.name = '"+country+"' WITH y,m,d,c MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c) WITH t,y RETURN toInteger(t.Temperature) as Temperature, y.value as Year" 
-=======
-	query = "MATCH (year:Year) WHERE year.value>=toInteger("+str(year1)+") AND year.value<=toInteger("+str(year2)+") WITH collect(year) AS years UNWIND years as y MATCH (y)-[:CONTAINS]->(m:Month) WITH y,m MATCH (m)-[:CONTAINS]->(d:Day) WITH y,m,d MATCH (c:Country) WHERE c.name = '"+country+"' WITH y,m,d,c MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c) WITH t,y RETURN {label:y.value,value:round(100*toFloat(t.Temperature))/100}"
->>>>>>> 7e1fc2e2c2b4507a1209a53c54d57a0cc9a1538d
+	query = "MATCH (year:Year) WHERE year.value>=toInteger("+str(year1)+") AND year.value<=toInteger("+str(year2)+") WITH collect(year) AS years UNWIND years as y MATCH (y)-[:CONTAINS]->(m:Month) WITH y,m MATCH (m)-[:CONTAINS]->(d:Day) WITH y,m,d MATCH (c:Country) WHERE c.name = '"+country+"' WITH y,m,d,c MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c) WITH t,y RETURN {label:toString(y.value),value:round(100*toFloat(t.Temperature))/100}"
 	results,meta = db.cypher_query(query)
 
 	#res = []
@@ -148,35 +145,16 @@ def get_temperature_for_country(request):
 	#	if r[1] ==2011:
 	#		temp+=r[0]
 	#	res.append(temp)
-<<<<<<< HEAD
-
-	dic = dict()
-	c = dict()
-
-	for i in range(year1,year2+1):
-		count = 0
-		temp = 0
-		for j in results:
-			if j[1] == i:
-				count +=1
-				temp +=j[0]
-
-		if count>0:
-			dic[i] = round(temp/count,2)
-		else:
-			dic[i] = temp
-		c[i] = count
-=======
-	print(results)
+	#print(results)
 
 	map_list = []
 	for r in results:
 		map_list.append(r[0])
-	#print(map_list)
+	print(map_list)
 	my_json_string = json.dumps(map_list)
 
 	#params(type,name,width,height,chart id, data type)
-	column2d = FusionCharts("line", "Chart2" , "50%", "400", "chart-2", "json",
+	column2d = FusionCharts("line", "Chart2" , "100%", "400", "chart-2", "json",
     
     # The data is passed as a string in the `dataSource` as parameter.
                         """{
@@ -187,12 +165,18 @@ def get_temperature_for_country(request):
                                 "showPercentInTooltip" : "0",
                                 "numberSuffix" : " \N{DEGREE SIGN}C",
                                 "enableMultiSlicing":"0",
-                                "theme": "fusion"
+                                "theme": "fusion",
+                                "exportEnabled" : "1",
+                                "showLabels": "1" ,
+                                "labelDisplay": "rotate",
+        						"slantLabel": "1",
+        						"xAxisName": "Countries",
+        						"yAxisName": "Temperature {br}(In celsius)" 
                             },
                             "data": """+ my_json_string +"""}""") 
 	print(column2d)
 	# returning complete JavaScript and HTML code, which is used to generate chart in the browsers.
-	return render(request, 'get_temperature_for_a_country.html', {'output2' : column2d.render()})
+	return render(request, 'charts.html', {'output2' : column2d.render()})
 
 
 	#for incomplete data
@@ -209,17 +193,9 @@ def get_temperature_for_country(request):
 		#else:
 			#dic[i] = temp
 		#c[i] = count
->>>>>>> 7e1fc2e2c2b4507a1209a53c54d57a0cc9a1538d
-
-
 
 	#return HttpResponse(dic.get(2012))
-<<<<<<< HEAD
-	return render(request, 'get_temperature_for_a_country.html', {'results': results,'dic':dic})
-=======
 	#return render(request, 'get_temperature_for_a_country.html', {'results': results,'dic':dic})
->>>>>>> 7e1fc2e2c2b4507a1209a53c54d57a0cc9a1538d
-	
 
 def update_temperature(request):
 

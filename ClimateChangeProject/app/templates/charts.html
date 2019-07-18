@@ -1,4 +1,6 @@
-{% load static %}
+{% load static %} 
+   <script type="text/javascript" src="{% static 'fusioncharts/fusioncharts.js' %}"></script>
+   <script type="text/javascript" src="{% static 'fusioncharts/themes/fusioncharts.theme.fint.js' %}"></script>
 <!DOCTYPE html>
 <html>
 
@@ -55,14 +57,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></td>
+                            <td colspan="3"><a href="/get_temperature_for_country/"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></a></td>
                         </tr>
                         <tr>
-                            <td class="bg-white border rounded-0 border-primary" colspan="3"><img></td>
+                            <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-2">{{ output2|safe }}</div></td>
                         </tr>
-                        <tr>
+                        <!--tr>
                             <td colspan="3"><a class="btn btn-primary" role="button" href="#" id="in-export">Export</a></td>
-                        </tr>
+                        </tr-->
                     </tbody>
                 </table>
             </div>
@@ -83,10 +85,10 @@
                         </tr>
                         <tr></tr>
                         <tr>
-                            <td colspan="3"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></td>
+                            <td colspan="3"><a href="/get_temperature_for_all_country/"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></a></td>
                         </tr>
                         <tr>
-                            <td class="bg-white border rounded-0 border-primary" colspan="3"><img></td>
+                            <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-1">{{ output1|safe }}</div></td>
                         </tr>
                         <tr>
                             <td colspan="3"><a class="btn btn-primary" role="button" href="#" id="in-export">Export</a></td>
