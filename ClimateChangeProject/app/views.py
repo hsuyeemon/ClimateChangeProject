@@ -10,7 +10,17 @@ from neomodel import db
 
 def index(request):
 
-	return render(request, 'base.html')
+	return render(request, 'index.html')
+	
+    #return HttpResponse("Hello, world. You're at the polls index.")
+
+def charts(request):
+
+	return render(request, 'charts.html')
+
+def login(request):
+
+	return render(request, 'login.html')
 	
     #return HttpResponse("Hello, world. You're at the polls index.")
 
@@ -72,6 +82,52 @@ def add_temperature(request):
 def get_temperature(request):
 
 	return HttpResponse("get_temperature")
+
+def get_temperature_for_all_country(request):
+
+	year = 2011
+	query = "MATCH (c:Country) WITH collect(c) AS countries UNWIND countries as country MATCH(y:Year{value:toInteger("+str(year)+")})-[:CONTAINS]->(m:Month)-[:CONTAINS]->(d:Day)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(country) WITH avg(toInteger(t.Temperature)) as tavg,country RETURN country.name,tavg"
+	results,meta = db.cypher_query(query)
+	return HttpResponse(results)
+
+def get_temperature_for_country(request):
+
+	country = "Myanmar"
+	year1 = 2010
+	year2 = 2012
+
+	query = "MATCH (year:Year) WHERE year.value>=toInteger("+str(year1)+") AND year.value<=toInteger("+str(year2)+") WITH collect(year) AS years UNWIND years as y MATCH (y)-[:CONTAINS]->(m:Month) WITH y,m MATCH (m)-[:CONTAINS]->(d:Day) WITH y,m,d MATCH (c:Country) WHERE c.name = '"+country+"' WITH y,m,d,c MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c) WITH t,y RETURN toInteger(t.Temperature) as Temperature, y.value as Year" 
+	results,meta = db.cypher_query(query)
+
+	#res = []
+	#for r in results:
+	#	temp = 0
+	#	if r[1] ==2011:
+	#		temp+=r[0]
+	#	res.append(temp)
+
+	dic = dict()
+	c = dict()
+
+	for i in range(year1,year2+1):
+		count = 0
+		temp = 0
+		for j in results:
+			if j[1] == i:
+				count +=1
+				temp +=j[0]
+
+		if count>0:
+			dic[i] = round(temp/count,2)
+		else:
+			dic[i] = temp
+		c[i] = count
+
+
+
+	#return HttpResponse(dic.get(2012))
+	return render(request, 'get_temperature_for_a_country.html', {'results': results,'dic':dic})
+	
 
 def update_temperature(request):
 
