@@ -1,5 +1,6 @@
-{% extends 'base.html' %}
-  
+{% load static %} 
+   <script type="text/javascript" src="{% static 'fusioncharts/fusioncharts.js' %}"></script>
+   <script type="text/javascript" src="{% static 'fusioncharts/themes/fusioncharts.theme.fint.js' %}"></script>
 {% block title %}{{ title }}{% endblock title %}
   
 {% block content %}
@@ -13,5 +14,8 @@
         
         <td>{{values}}</td>
     </tr>
+
     {% endfor %}
+
+    <div id="chart-2">{{ output2|safe }}</div>
 {% endblock content %}
