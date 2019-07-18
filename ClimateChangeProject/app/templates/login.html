@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Climate</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Contact-Form-Clean.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Footer-Dark.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Login-Form-Clean.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Navigation-with-Button.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Registration-Form-with-Photo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md">
+        <div class="container-fluid"><a class="navbar-brand text-primary" href="#"><img src="{% static 'img/FocusArea__Climate.jpg' %}" id="logo">&nbsp; Climate SOL</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div
+                class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/app/" id="l1">Home</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="/login/" id="l2">Login</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/charts/" id="l3">Charts</a></li>
+                </ul>
+        </div>
+        </div>
+    </nav>
+    <div id="Main">
+        <div class="jumbotron" id="j2">
+            <h1><i class="icon ion-ios-navigate"></i>&nbsp; Login</h1>
+            <form method="post">
+                <h2 class="sr-only">Login Form</h2>
+                <div class="illustration"></div>
+                <div class="form-group"><input class="form-control" type="email" name="email" required="" placeholder="Email" pattern="*@*"></div>
+                <div class="form-group"><input class="form-control" type="password" name="password" required="" placeholder="Password"></div>
+                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Log In</button></div>
+            </form>
+            <p></p><i class="fa fa-warning"></i>
+            <p>You must be an administrator to login</p>
+        </div>
+    </div>
+    <div class="footer-dark">
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-lg-12 item text">
+                        <h3>Contact Us</h3>
+                        <p>Have some suggestion? Feel free to contact us!</p>
+                    </div>
+                    <div class="col item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-snapchat"></i></a><a href="#"><i class="icon ion-social-instagram"></i></a></div>
+                </div>
+                <p class="copyright">Climate SOL © 2019</p>
+            </div>
+        </footer>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

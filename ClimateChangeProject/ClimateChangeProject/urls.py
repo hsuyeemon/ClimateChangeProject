@@ -19,6 +19,8 @@ from app import views
 
 urlpatterns = [
 	path('app/', include('app.urls')),
+    path('charts/',views.charts,name='charts'),
+    path('login/',views.login,name='login'),
     path('add_temperature/', views.add_temperature, name='add-temperature'),
     path('get_temperature/', views.get_temperature, name='get_temperature'),
     path('delete_temperature/', views.delete_temperature, name='delete_temperature'),
