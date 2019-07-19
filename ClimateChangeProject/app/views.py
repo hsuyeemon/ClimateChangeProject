@@ -9,6 +9,7 @@ from .form import TemperatureForm
 from neomodel import db
 import json
 
+
 # Include the `fusioncharts.py` file which has required functions to embed the charts in html page
 from .fusioncharts import FusionCharts
 
@@ -181,25 +182,30 @@ def prepare_column2d(year=2012):
 	return country_tavg_map,caption,subCaption
 
 def prepare_linechart(country="Myanmar",year1 = 1999,year2 = 2013):
-	query = "MATCH (year:Year) WHERE year.value>=toInteger("+str(year1)+") AND year.value<=toInteger("+str(year2)+") WITH collect(year) AS years UNWIND years as y MATCH (y)-[:CONTAINS]->(m:Month) WITH y,m MATCH (m)-[:CONTAINS]->(d:Day) WITH y,m,d MATCH (c:Country) WHERE c.name = '"+country+"' WITH y,m,d,c MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c) WITH t,y RETURN {label:toString(y.value),value:round(100*toFloat(t.Temperature))/100}"
+	query = "MATCH (year:Year) WHERE year.value>=toInteger("+str(year1)+") AND year.value<=toInteger("+str(year2)+") WITH collect(year) AS years UNWIND years as y MATCH (y)-[:CONTAINS]->(m:Month) WITH y,m MATCH (m)-[:CONTAINS]->(d:Day) WITH y,m,d MATCH (c:Country) WHERE c.name = '"+country+"' WITH y,m,d,c MATCH (d)<-[:TEMP_AT*]-(t:Avg_temperature)-[:TEMP_OF]->(c) WITH t.Temperature as temperature,y.value as year RETURN year,toInteger(temperature)"
 	results,meta = db.cypher_query(query)
-
-	#res = []
-	#for r in results:
-	#	temp = 0
-	#	if r[1] ==2011:
-	#		temp+=r[0]
-	#	res.append(temp)
-	#print(results)
+	
 
 	map_list = []
-	for r in results:
-		map_list.append(r[0])
-	#print(map_list)
-	
-	year_tavg_map = json.dumps(map_list)
+	for i in range(year1,year2+1):
+		c=0
+		t=0
+		dic={}
+		for j in range(len(results)):
+			if results[j][0] == i:
+				c=c+1
+				t = t + results[j][1]
+			
+		if c!=0:
+			t = round(100*t/c)/100
+			dic['label']=str(i)
+			dic['value']=t
+			map_list.append(dic)
 
+	year_tavg_map = json.dumps(map_list)
 	caption = "Temperature Situations of "+country
 	subCaption = "From the year "+str(year1)+" to "+str(year2)
 
 	return year_tavg_map,caption,subCaption
+
+
