@@ -34,9 +34,9 @@ def charts(request):
 
 		#print(data.get('in-datetime1'))
 			#country = data.get('country')
-			country = "Laos" 
-			year1 = data.get('in-year1')
-			year2 = data.get('in-year2')
+			country = "Myanmar" 
+			year1 = int(data.get('in-year1'))
+			year2 = int(data.get('in-year2'))
 			data,caption,subCaption = prepare_linechart(country,year1,year2)
 			line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
 
@@ -139,6 +139,9 @@ def add_query(y,d,m,temperature,date,country):
 	results,meta = db.cypher_query(query)
 	return results
 	
+
+
+
 def generate_chart(ctype,chart_name,chart_id,caption,subCaption,x_axis,data):
 
 	chart = FusionCharts(ctype,chart_name, "100%", "400",chart_id, "json",
