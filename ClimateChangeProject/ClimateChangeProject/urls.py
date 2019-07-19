@@ -22,9 +22,6 @@ urlpatterns = [
     path('charts/',views.charts,name='charts'),
     path('login/',views.login,name='login'),
     path('add_temperature/', views.add_temperature, name='add-temperature'),
-    path('get_temperature/', views.get_temperature, name='get_temperature'),
-    path('get_temperature_for_all_country/', views.get_temperature_for_all_country, name='get_temperature_for_all_country'),
-    path('get_temperature_for_country/', views.get_temperature_for_country, name='get_temperature_for_country'),
     path('delete_temperature/', views.delete_temperature, name='delete_temperature'),
     path('update_temperature/', views.update_temperature, name='update_temperature'),
 ]

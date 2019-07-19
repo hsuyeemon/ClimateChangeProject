@@ -36,6 +36,9 @@
         <div class="jumbotron" id="j1">
             <h1>Line Chart</h1>
             <div class="table-responsive">
+                <form action="" method="post" novalidate>
+                    <input type="hidden" name="chart-type" value="line">
+                {{ form.as_table }}
                 <table class="table">
                     <thead>
                         <tr></tr>
@@ -44,9 +47,9 @@
                         <tr>
                             <td id="t2">Year</td>
                             <td>
-                                <p id="t2">From</p><input class="border rounded border-primary" type="date" name="in-datetime" required="" id="in"></td>
+                                <p id="t2">From</p><input class="border rounded border-primary" type="dropdown" name="in-year1" required="" id="in"></td>
                             <td>
-                                <p id="t2">To</p><input class="border rounded border-primary" type="date" name="in-datetime" required="" id="in"></td>
+                                <p id="t2">To</p><input class="border rounded border-primary" type="dropdown" name="in-year2" required="" id="in"></td>
                         </tr>
                         <tr>
                             <td id="t2">Country</td>
@@ -57,22 +60,29 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3"><a href="/get_temperature_for_country/"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></a></td>
+                            <td colspan="3"><!--a href="/get_temperature_for_country/"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></a-->
+                            <input type="submit" value="Generate" class="btn btn-primary" id="in-confirm"></td>
+                            </td>
                         </tr>
                         <tr>
-                            <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-2">{{ output2|safe }}</div></td>
+                            <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-1">{{ output1|safe }}</div></td>
                         </tr>
                         <!--tr>
                             <td colspan="3"><a class="btn btn-primary" role="button" href="#" id="in-export">Export</a></td>
                         </tr-->
                     </tbody>
                 </table>
+                {% csrf_token %}
+                </form>
             </div>
             <p></p>
         </div>
         <div class="jumbotron" id="j3">
             <h1>Column Chart</h1>
             <div class="table-responsive">
+                <form action="" method="post" novalidate>
+                <input type="hidden" name="chart-type" value="Column">
+                {{ form.as_table }}
                 <table class="table">
                     <thead>
                         <tr></tr>
@@ -80,21 +90,23 @@
                     <tbody>
                         <tr>
                             <td id="t2">Year</td>
-                            <td colspan="2"><input class="border rounded border-primary" type="date" name="in-datetime" required="" id="in"></td>
+                            <td colspan="2"><input class="border rounded border-primary" type="dropdown" name="year" required="" id="in"></td>
                             <td></td>
                         </tr>
                         <tr></tr>
                         <tr>
-                            <td colspan="3"><a href="/get_temperature_for_all_country/"><button class="btn btn-primary" type="button" id="in-confirm">Confirm</button></a></td>
+                            <td colspan="3"><a href="/charts/"><input type="submit" class="btn btn-primary" id="in-confirm" value="Generate"></a></td>
                         </tr>
                         <tr>
-                            <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-1">{{ output1|safe }}</div></td>
+                            <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-2">{{ output2|safe }}</div></td>
                         </tr>
                         <tr>
                             <td colspan="3"><a class="btn btn-primary" role="button" href="#" id="in-export">Export</a></td>
                         </tr>
                     </tbody>
                 </table>
+                {% csrf_token %}
+                </form>
             </div>
             <p></p>
         </div>
@@ -113,8 +125,8 @@
             </div>
         </footer>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js'%}"></script>
 </body>
 
 </html>
