@@ -5,7 +5,8 @@ from django.http import HttpResponse,HttpResponseRedirect
 from .models import Country
 from .models import Temperature
 from .form import TemperatureForm
-
+from .models import Admin
+from .form import AdminForm
 from neomodel import db
 import json
 
@@ -66,9 +67,30 @@ def charts(request):
 
 def login(request):
 
-	return render(request, 'login.html')
-	
-    #return HttpResponse("Hello, world. You're at the polls index.")
+	submitted = False
+	if request.method == 'POST':
+		form=AdminForm(request.POST)
+		inputdata = request.POST.copy()
+		name = inputdata.get('username')
+		pwd = inputdata.get('password')
+		admin_data=Admin.nodes.get(username='admin')
+		db_name=admin_data.username
+		db_pwd=admin_data.password
+		print(db)
+		if name==db_name and pwd==db_pwd:
+			request.session['username'] = name
+			#return HttpResponseRedirect('/login/?submitted=True')
+			return render(request,"admin.html")
+			#return HttpResponse(request.session['username'])
+			#return HttpResponse("session created!")
+		else:
+			return HttpResponseRedirect('/login/?submitted=False')
+	else:
+		form = Admin()
+		if 'submitted' in request.GET:
+			submitted = True
+
+	return render(request,"login.html")
 
 def add_temperature(request):
 	submitted = False
@@ -210,5 +232,3 @@ def prepare_linechart(country="Myanmar",year1 = 1999,year2 = 2013):
 	subCaption = "From the year "+str(year1)+" to "+str(year2)
 
 	return year_tavg_map,caption,subCaption
-
-

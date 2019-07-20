@@ -36,4 +36,10 @@ class Day(DjangoNode):
 	value = IntegerProperty();
 
 
+class Admin(DjangoNode):
+	username=StringProperty()
+	password=StringProperty()
+	class Meta:
+			app_label='app'
 
+			
