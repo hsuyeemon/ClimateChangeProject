@@ -24,7 +24,13 @@
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link active" href="/app/" id="l1">Home</a></li>
+
+                    {% if  request.session.username  == "admin" %}
+                     <li class="nav-item" role="presentation"><a class="nav-link" href="/admin/" id="l2">Admin</a></li>
+
+                    {% else %}
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/login/" id="l2">Login</a></li>
+                    {% endif %}
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/charts/" id="l3">Charts</a></li>
                 </ul>
         </div>

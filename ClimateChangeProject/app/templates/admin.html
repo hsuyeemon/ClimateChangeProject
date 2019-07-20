@@ -23,9 +23,9 @@
             <div
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="home.html" id="l1">Home</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link active" href="login.html" id="l2">Admin</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="charts.html" id="l3">Charts</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/app/" id="l1">Home</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="/login/" id="l2">Admin</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/charts/" id="l3">Charts</a></li>
                 </ul>
         </div>
         </div>
@@ -34,31 +34,45 @@
         <div class="jumbotron" id="j1">
             <h1>Add Data</h1>
             <div class="table-responsive">
-                <table class="table">
+                {% if submitted %}
+                <p class="success">
+                Temperature was submitted successfully. Thank you.
+                </p>
+
+                {% endif %}
+                <form action="/add_temperature/" method="post" novalidate>
+                    <table class="table">
+                    {{ form.as_table }}
                     <thead>
                         <tr></tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td id="t2">Temperature</td>
-                            <td><input class="border rounded border-primary" type="text" name="in-temp" required="" id="in"></td>
+                            <td><input class="border rounded border-primary" type="text" name="temperature" required="" id="in"></td>
                         </tr>
                         <tr>
                             <td id="t2">Country</td>
                             <td>
-                                <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                <!--div class="dropdown" name="country"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
-                                </div>
+                                </div-->
+                                <input class="border rounded border-primary" type="dropdown" name="country" required="" id="in">
                             </td>
                         </tr>
                         <tr>
                             <td id="t2">Date</td>
-                            <td><input class="border rounded border-primary" type="date" name="in-datetime" required="" id="in"></td>
+                            <td><input class="border rounded border-primary" type="date" name="date" required="" id="in"></td>
                         </tr>
+
                     </tbody>
                 </table>
+                <a href="#"><input type="submit" value="Add data"  class="btn btn-primary" id="in-confirm"></a>
+                {% csrf_token %}
+
+                </form>
             </div>
-            <p><a class="btn btn-primary" role="button" href="#">Add Data</a></p>
+            
         </div>
         <div class="jumbotron" id="j3">
             <h1>Add Data from csv</h1>
@@ -76,7 +90,7 @@
                 <div class="col-md-6 col-lg-6 col-xl-5 text-center" id="c1">
                     <p class="text-center" id="t1">Finished adding data?</p>
                 </div>
-                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="login.html" id="btn-logout">Logout</a></div>
+                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="/logout/" id="btn-logout">Logout</a></div>
             </div>
             <p></p>
         </div>

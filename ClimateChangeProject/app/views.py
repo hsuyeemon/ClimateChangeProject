@@ -79,8 +79,8 @@ def login(request):
 		print(db)
 		if name==db_name and pwd==db_pwd:
 			request.session['username'] = name
-			#return HttpResponseRedirect('/login/?submitted=True')
-			return render(request,"admin.html")
+			return HttpResponseRedirect('/admin/')
+			#return render(request,"/admin/")
 			#return HttpResponse(request.session['username'])
 			#return HttpResponse("session created!")
 		else:
@@ -93,16 +93,21 @@ def login(request):
 	return render(request,"login.html")
 
 def add_temperature(request):
+
+	print("add_temperature")
 	submitted = False
 	count="zzz"
 	if request.method == 'POST':
 		form = TemperatureForm(request.POST)
 		if form.is_valid():
 			#form.save()
+			print(form.data)
 			temperature = form.data['temperature']
+			print(temperature)
 			date = form.data['date']
 			dt = form.data['date']
 			country = form.data['country']
+			#country = "Myanmar"
 			y = date[0:4]
 			if date[5]=="0" :
 				m = date[6:7] 
@@ -144,7 +149,7 @@ def add_temperature(request):
 		form = Temperature()
 		if 'submitted' in request.GET:
 			submitted = True
-	return render(request, 'add_temperature.html', {'form': form,'submitted': submitted})
+	return render(request, 'admin.html', {'form': form,'submitted': submitted})
 	#return HttpResponse("add_temperature")
 
 
@@ -232,3 +237,17 @@ def prepare_linechart(country="Myanmar",year1 = 1999,year2 = 2013):
 	subCaption = "From the year "+str(year1)+" to "+str(year2)
 
 	return year_tavg_map,caption,subCaption
+
+def admin(request):
+
+	if request.session['username'] == "admin":
+		return render(request,"admin.html")
+	else:
+		return HttpResponseRedirect('/login/?submitted=False')
+
+def logout(request):
+    try:
+        del request.session['username']
+    except KeyError:
+        pass
+    return HttpResponseRedirect('/login/?submitted=False')
