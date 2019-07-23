@@ -15,7 +15,7 @@ def index(request):
 def add_country(request):
      submitted = False
      if request.method == 'POST':
-         form = CountryForm(request.POST)
+         #form = CountryForm(request.POST)
          data = request.POST.copy()
          data.get('')
          if form.is_valid():

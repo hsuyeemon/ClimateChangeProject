@@ -24,46 +24,6 @@ def index(request):
 	
     #return HttpResponse("Hello, world. You're at the polls index.")
 
-def charts(request):
-	#print(request)
-	submitted = False
-	global line,column2d
-	if request.method == 'POST':
-		data = request.POST.copy()
-
-		if data.get('chart-type') == "line":
-
-		#print(data.get('in-datetime1'))
-			#country = data.get('country')
-			country = "Myanmar" 
-			year1 = int(data.get('in-year1'))
-			year2 = int(data.get('in-year2'))
-			data,caption,subCaption = prepare_linechart(country,year1,year2)
-			line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
-
-			return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
-
-		else :
-			year = data.get('year')
-			data,caption,subCaption = prepare_column2d(year)
-
-			#params(type,name,width,height,chart id, data type)
-			column2d = generate_chart("column2d","Chart-2","chart-2",caption,subCaption,"Countries",data)
-			#print(column2d)
-			return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
-	else:
-		#form = Country()
-		if 'submitted' in request.GET:
-			submitted = True
-
-		data,caption,subCaption = prepare_linechart()
-		line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
-
-		data,caption,subCaption = prepare_column2d()
-		#params(type,name,width,height,chart id, data type)
-		column2d = generate_chart("column2d","Chart-2","chart-2",caption,subCaption,"Countries",data)
-		return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
-
 
 def login(request):
 
@@ -92,11 +52,24 @@ def login(request):
 
 	return render(request,"login.html")
 
+def admin(request):
+
+	if request.session['username'] == "admin":
+		return render(request,"admin.html")
+	else:
+		return HttpResponseRedirect('/login/?submitted=False')
+
+def logout(request):
+    try:
+        del request.session['username']
+    except KeyError:
+        pass
+    return HttpResponseRedirect('/login/?submitted=False')
+
+
 def add_temperature(request):
 
-	print("add_temperature")
 	submitted = False
-	count="zzz"
 	if request.method == 'POST':
 		form = TemperatureForm(request.POST)
 		if form.is_valid():
@@ -152,21 +125,129 @@ def add_temperature(request):
 	return render(request, 'admin.html', {'form': form,'submitted': submitted})
 	#return HttpResponse("add_temperature")
 
-
-def update_temperature(request):
-
-	return HttpResponse("update_temperature")
-
-def delete_temperature(request):
-
-	return HttpResponse("delete_temperature")
-
 def add_query(y,d,m,temperature,date,country):
 	query = "WITH "+y+" as y MATCH (year : Year{value:y}) WITH year,"+m+" AS m MATCH (year)-[:CONTAINS]->(month:Month {value:m}) WITH year,month,"+d+" AS d CREATE (day:Day {value : d}) MERGE (month)-[:CONTAINS]->(day) WITH year,month,day,"+temperature+" as t,'"+date+"' AS date,'"+country+"' AS c CREATE (temp:Avg_temperature{Date :date,country : c,Temperature :t }) MERGE (country:Country {name: c}) MERGE (temp)-[:TEMP_OF]->(country) MERGE (temp)-[:TEMP_AT]->(day) RETURN year,month,day,temp,country"
 	results,meta = db.cypher_query(query)
 	return results
+
+def get_temperature(date,country):
+	
+	query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
+	results,meta = db.cypher_query(query)
+	return results[0][0]
+
+
+
+def update_temperature(request):
+	updated = False
+	if request.method == 'POST':
+		data = request.POST.copy()
+		print(data)
+		date = data.get('in-datetime')
+		country = data.get('country')
+
+		if data.get('temperature') != "":
+			print("update")
+
+			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) SET tem.Temperature= "+str(data.get('new_temperature'))+" RETURN tem"
+			results,meta = db.cypher_query(query)
+			return HttpResponseRedirect('/update_temperature/?updated=True')
+
+
+
+		else :
+			result = get_temperature(date,country)
+			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
+			results,meta = db.cypher_query(query)
+			return render(request,'admin.html', {'country':country,'date':date,'old_temperature':result})
+
+	else:
+		if 'updated' in request.GET:
+			updated = True
+	return render(request, 'admin.html', {'updated': updated})
 	
 
+def delete_temperature(request):
+
+	deleted = False
+	if request.method == 'POST':
+		data = request.POST.copy()
+		print(data)
+		date = data.get('de_datetime')
+		country = data.get('de_country')
+
+
+		if data.get('de_temp') != "":
+			print("delete")
+
+			y = date[0:4]
+			if date[5]=="0" :
+				m = date[6:7] 
+			else:
+				m=date[5:7]
+			if date[8]=="0" :
+				d = date[9] 
+			else:
+				d=date[8:9]	
+
+			query = "WITH toInteger("+y+") as y MATCH (year:Year {value: y}) WITH year,toInteger("+m+") as m MATCH (year)-[:CONTAINS]->(month:Month {value: m}) WITH year,month,toInteger("+d+") as d MATCH (month)-[:CONTAINS]->(day:Day{value:d}) WITH year,month,day,'"+country+"' as c Match p = (country:Country{name:c})<-[r1:TEMP_OF*]-(n:Avg_temperature)-[r2:TEMP_AT]->(day)<-[r3:CONTAINS*]-(month)<-[:CONTAINS*]-(year) WITH p,r1,r2,r3,c,n,month,day FOREACH (rel IN r1| DELETE rel) DELETE r2 FOREACH (rel IN r3| DELETE rel) DELETE n DELETE day"
+			results,meta = db.cypher_query(query)
+			print(results)
+			return HttpResponseRedirect('/delete_temperature/?deleted=True')
+
+
+
+		else :
+			print("Else")
+			result = get_temperature(date,country)
+			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
+			results,meta = db.cypher_query(query)
+			return render(request,'admin.html', {'de_country':country,'de_datetime':date,'de_temp':result})
+
+	else:
+		if 'deleted' in request.GET:
+			deleted = True
+	return render(request, 'admin.html', {'deleted': deleted})
+
+def charts(request):
+	#print(request)
+	submitted = False
+	global line,column2d
+	if request.method == 'POST':
+		data = request.POST.copy()
+
+		if data.get('chart-type') == "line":
+
+		#print(data.get('in-datetime1'))
+			#country = data.get('country')
+			country = "Myanmar" 
+			year1 = int(data.get('in-year1'))
+			year2 = int(data.get('in-year2'))
+			data,caption,subCaption = prepare_linechart(country,year1,year2)
+			line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
+
+			return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
+
+		else :
+			year = data.get('year')
+			data,caption,subCaption = prepare_column2d(year)
+
+			#params(type,name,width,height,chart id, data type)
+			column2d = generate_chart("column2d","Chart-2","chart-2",caption,subCaption,"Countries",data)
+			#print(column2d)
+			return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
+	else:
+		#form = Country()
+		if 'submitted' in request.GET:
+			submitted = True
+
+		data,caption,subCaption = prepare_linechart()
+		line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
+
+		data,caption,subCaption = prepare_column2d()
+		#params(type,name,width,height,chart id, data type)
+		column2d = generate_chart("column2d","Chart-2","chart-2",caption,subCaption,"Countries",data)
+		return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
 
 
 def generate_chart(ctype,chart_name,chart_id,caption,subCaption,x_axis,data):
@@ -223,7 +304,7 @@ def prepare_linechart(country="Myanmar",year1 = 1999,year2 = 2013):
 		dic={}
 		for j in range(len(results)):
 			if results[j][0] == i:
-				c=c+1
+				c=c+1	
 				t = t + results[j][1]
 			
 		if c!=0:
@@ -238,16 +319,3 @@ def prepare_linechart(country="Myanmar",year1 = 1999,year2 = 2013):
 
 	return year_tavg_map,caption,subCaption
 
-def admin(request):
-
-	if request.session['username'] == "admin":
-		return render(request,"admin.html")
-	else:
-		return HttpResponseRedirect('/login/?submitted=False')
-
-def logout(request):
-    try:
-        del request.session['username']
-    except KeyError:
-        pass
-    return HttpResponseRedirect('/login/?submitted=False')

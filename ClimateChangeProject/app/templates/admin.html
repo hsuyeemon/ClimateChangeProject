@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Climate</title>
-     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/Contact-Form-Clean.css' %}">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 
+
 <body>
     <nav class="navbar navbar-light navbar-expand-md">
         <div class="container-fluid"><a class="navbar-brand text-primary" href="#"><img src="{% static 'img/FocusArea__Climate.jpg'%}" id="logo">&nbsp; Climate SOL</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
@@ -24,7 +25,7 @@
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/app/" id="l1">Home</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link active" href="/login/" id="l2">Admin</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" href="/admin/" id="l2">Admin</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/charts/" id="l3">Charts</a></li>
                 </ul>
         </div>
@@ -32,65 +33,296 @@
     </nav>
     <div id="Main">
         <div class="jumbotron" id="j1">
-            <h1>Add Data</h1>
-            <div class="table-responsive">
-                {% if submitted %}
-                <p class="success">
-                Temperature was submitted successfully. Thank you.
-                </p>
-
-                {% endif %}
-                <form action="/add_temperature/" method="post" novalidate>
-                    <table class="table">
-                    {{ form.as_table }}
-                    <thead>
-                        <tr></tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="t2">Temperature</td>
-                            <td><input class="border rounded border-primary" type="text" name="temperature" required="" id="in"></td>
-                        </tr>
-                        <tr>
-                            <td id="t2">Country</td>
-                            <td>
-                                <!--div class="dropdown" name="country"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
-                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
-                                </div-->
-                                <input class="border rounded border-primary" type="dropdown" name="country" required="" id="in">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td id="t2">Date</td>
-                            <td><input class="border rounded border-primary" type="date" name="date" required="" id="in"></td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <a href="#"><input type="submit" value="Add data"  class="btn btn-primary" id="in-confirm"></a>
+            <div id="tabs-m">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item" id="tabs1"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1">Add Data</a></li>
+                    <li class="nav-item" id="tabs1"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-2">Update Data</a></li>
+                    <li class="nav-item" id="tabs1"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-3">Delete Data</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" role="tabpanel" id="tab-1">
+                        <div class="jumbotron" id="j1">
+                            <h1>Add Data</h1>
+                            {% if submitted %}
+                        <p class="success">
+                    Temperature was submitted successfully. Thank you.
+                        </p>
+                        <form action="/add_temperature/" method="post" novalidate>
+                  
+                            <div class="table-responsive">
+                                <table class="table">
+                                    {{ form.as_table }}
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="t2">Temperature</td>
+                                            <td><input class="border rounded border-primary" type="text" name="temperature" required="" id="in"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Country</td>
+                                            <!--td>
+                                                <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                                                </div>
+                                            </td-->
+                                            <td><input class="border rounded border-primary" type="text" name="country" required="" id="in"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Date</td>
+                                            <td><input class="border rounded border-primary" type="date" name="date" required="" id="in"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <a href="#"><input type="submit" value="Add"  class="btn btn-primary" id="in-confirm"></a>
                 {% csrf_token %}
+                </form> 
 
+                        {% else %}
+                <form action="/add_temperature/" method="post" novalidate>
+                  
+                            <div class="table-responsive">
+                                <table class="table">
+                                    {{ form.as_table }}
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="t2">Temperature</td>
+                                            <td><input class="border rounded border-primary" type="text" name="temperature" required="" id="in"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Country</td>
+                                            <!--td>
+                                                <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                                                </div>
+                                            </td-->
+                                            <td><input class="border rounded border-primary" type="text" name="country" required="" id="in"></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Date</td>
+                                            <td><input class="border rounded border-primary" type="date" name="date" required="" id="in"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <a href="#"><input type="submit" value="Add"  class="btn btn-primary" id="in-confirm"></a>
+                {% csrf_token %}
+                </form> {% endif %}
+                        </div>
+                        <div class="jumbotron" id="j3">
+                            <h1>Add Data from csv</h1>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6 col-xl-5 text-center" id="c1">
+                                    <p class="text-center" id="t1">Browse csv file</p>
+                                </div>
+                                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><button class="btn btn-primary" type="button" id="btn-browse">Browse</button></div>
+                                <div class="col-4 col-sm-5 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="#">Import</a></div>
+                            </div>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="tab-2">
+                        <div class="jumbotron" id="j1">
+                            <h1>Update Data</h1>
+                            {% if updated %}
+                        <p class="success">
+                    Temperature was updated successfully. Thank you.
+                        </p>
+                        <form action="/update_temperature/" method="post" novalidate>
+                            <div class="table-responsive">
+                                 <table class="table" id="update">
+                                    {{ form.as_table }}
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="t2">Country</td>
+                                            <td colspan="2"> <input class="border rounded border-primary" type="text" name="country" required="" id="in" value={{country}}></td>
+                                            <!--td colspan="2">
+                                                <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                                                </div-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Date</td>
+                                            <td colspan="2"><input class="border rounded border-primary" type="date" name="in-datetime" required="" id="in" value={{date}}></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td><td> 
+                                           <a href=""><input type="submit" value="Find data"  class="btn btn-primary" id="in-confirm"></a></td><td></td>                          </tr>
+                                        <tr>
+                                            <td id="t2">Temperature</td>
+                                            <td><input class="border rounded border-primary" type="text" name="temperature" readonly="" required="" placeholder="Old Data" id="in" value= {{old_temperature}} ></td>
+                                            <td><input class="border rounded border-primary" type="text" name="new_temperature" required="" placeholder="New Data" id="in" value={{new_temperature}}></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>                                            <td><a href="#"><input type="submit" value="Update"  class="btn btn-primary" id="in-confirm"></a></td><td></td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            
+                {% csrf_token %}
                 </form>
-            </div>
-            
-        </div>
-        <div class="jumbotron" id="j3">
-            <h1>Add Data from csv</h1>
-            <div class="row">
-                <div class="col-md-6 col-lg-6 col-xl-5 text-center" id="c1">
-                    <p class="text-center" id="t1">Browse csv file</p>
+
+                        {% else %}
+
+                <form action="/update_temperature/" method="post" novalidate>
+                            <div class="table-responsive">
+                                 <table class="table" id="update">
+                                    {{ form.as_table }}
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="t2">Country</td>
+                                            <td colspan="2"> <input class="border rounded border-primary" type="text" name="country" required="" id="in" value={{country}}></td>
+                                            <!--td colspan="2">
+                                                <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                                                </div-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Date</td>
+                                            <td colspan="2"><input class="border rounded border-primary" type="date" name="in-datetime" required="" id="in" value={{date}}></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td><td> 
+                                           <a href=""><input type="submit" value="Find data"  class="btn btn-primary" id="in-confirm"></a></td><td></td>                          </tr>
+                                        <tr>
+                                            <td id="t2">Temperature</td>
+                                            <td><input class="border rounded border-primary" type="text" name="temperature" readonly="" required="" placeholder="Old Data" id="in" value= {{old_temperature}} ></td>
+                                            <td><input class="border rounded border-primary" type="text" name="new_temperature" required="" placeholder="New Data" id="in" value={{new_temperature}}></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>                                            <td><a href="#"><input type="submit" value="Update data"  class="btn btn-primary" id="in-confirm"></a></td><td></td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            
+                {% csrf_token %}
+                </form> {% endif %}
+                        </div>
+                    </div>
+                    <div class="tab-pane" role="tabpanel" id="tab-3">
+                        <div class="jumbotron" id="j1">
+                            <h1>Delete Data</h1>
+                             {% if deleted %}
+                        <p class="success">
+                    Temperature was deleted successfully. Thank you.
+                        </p>
+                        <form action="/delete_temperature/" method="post" novalidate>
+                            <div class="table-responsive">
+                                 <table class="table" id="update">
+                                    {{ form.as_table }}
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="t2">Country</td>
+                                            <td colspan="2">
+                                                <!--div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                                                </div-->
+                                                <input class="border rounded border-primary" type="text" name="de_country" required="" id="in" value={{de_country}}>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Date</td>
+                                            <td colspan="2"><input class="border rounded border-primary" type="date" name="de_datetime" required="" id="in" value={{de_datetime}}></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td></td>
+                                            <td><a href=""><input type="submit" value="Find data"  class="btn btn-primary" id="in-confirm"></a></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Temperature</td>
+                                            <td colspan="2"><input class="border rounded border-primary" type="text" name="de_temp" readonly="" required=""  placeholder="Temperature" id="in" value = {{de_temp}}></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            
+                                            <td><a href="#"><input type="submit" value="Delete"  class="btn btn-primary" id="in-confirm"></a></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% csrf_token %}
+                </form>
+                 {% else %}
+                 <form action="/delete_temperature/" method="post" novalidate>
+                            <div class="table-responsive">
+                                 <table class="table" id="update">
+                                    {{ form.as_table }}
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="t2">Country</td>
+                                            <td colspan="2">
+                                                <!--div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                                    <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
+                                                </div-->
+                                                <input class="border rounded border-primary" type="text" name="de_country" required="" id="in" value={{de_country}}>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Date</td>
+                                            <td colspan="2"><input class="border rounded border-primary" type="date" name="de_datetime" required="" id="in" value={{de_datetime}}></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td></td>
+                                            <td><a href=""><input type="submit" value="Find data"  class="btn btn-primary" id="in-confirm"></a></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td id="t2">Temperature</td>
+                                            <td colspan="2"><input class="border rounded border-primary" type="text" name="de_temp" readonly="" required=""  id="in" value={{de_temp}}></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            
+                                            <td><a href="#"><input type="submit" value="Delete"  class="btn btn-primary" id="in-confirm"></a></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% csrf_token %}
+                </form>
+                {% endif %}
+                            <p></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><button class="btn btn-primary" type="button" id="btn-browse">Browse</button></div>
-                <div class="col-4 col-sm-5 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="#">Import</a></div>
             </div>
-            <p></p>
         </div>
         <div class="jumbotron" id="j3">
             <div class="row">
                 <div class="col-md-6 col-lg-6 col-xl-5 text-center" id="c1">
                     <p class="text-center" id="t1">Finished adding data?</p>
                 </div>
-                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="/logout/" id="btn-logout">Logout</a></div>
+                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="login.html" id="btn-logout">Logout</a></div>
             </div>
             <p></p>
         </div>
@@ -109,8 +341,8 @@
             </div>
         </footer>
     </div>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js'%}"></script>
 </body>
 
 </html>
