@@ -61,7 +61,7 @@
                                             <td><input class="border rounded border-primary" type="text" name="temperature" required="" id="in"></td>
                                         </tr>
                                         <tr>
-                                            <td id="t2">Country</td>
+                                            <td id="t2 ">Country</td>
                                             <!--td>
                                                 <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
@@ -145,7 +145,11 @@
                                     <tbody>
                                         <tr>
                                             <td id="t2">Country</td>
-                                            <td colspan="2"> <input class="border rounded border-primary" type="text" name="country" required="" id="in" value={{country}}></td>
+                                            <td colspan="2"> <select href= "/load_countries/"class="border rounded border-primary" name="country" id="Country" required="">
+                                <option value="">select country</option>
+                                {% for country in countries %}
+                                <option value="{{ country.name }}">{{ country.name }}</option>
+                                {% endfor %}    </select>
                                             <!--td colspan="2">
                                                 <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
@@ -187,7 +191,11 @@
                                     <tbody>
                                         <tr>
                                             <td id="t2">Country</td>
-                                            <td colspan="2"> <input class="border rounded border-primary" type="text" name="country" required="" id="in" value={{country}}></td>
+                                            <td colspan="2"> <select href= "/load_countries/"class="border rounded border-primary" name="country" id="Country" required="">
+                                <option value="">select country</option>
+                                {% for country in countries %}
+                                <option value="{{ country.name }}">{{ country.name }}</option>
+                                {% endfor %}    </select></td>
                                             <!--td colspan="2">
                                                 <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
@@ -239,7 +247,11 @@
                                                 <!--div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
                                                 </div-->
-                                                <input class="border rounded border-primary" type="text" name="de_country" required="" id="in" value={{de_country}}>
+                                               <select href= "/load_countries/"class="border rounded border-primary" name="de_country" id="Country" required="">
+                                <option value="">select country</option>
+                                {% for country in countries %}
+                                <option value="{{ country.name }}">{{ country.name }}</option>
+                                {% endfor %}    </select>
                                             </td>
                                         </tr>
                                         <tr>
@@ -282,7 +294,11 @@
                                                 <!--div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
                                                 </div-->
-                                                <input class="border rounded border-primary" type="text" name="de_country" required="" id="in" value={{de_country}}>
+                                               <select href= "/load_countries/"class="border rounded border-primary" name="de_country" id="Country" required="">
+                                <option value="">select country</option>
+                                {% for country in countries %}
+                                <option value="{{ country.name }}">{{ country.name }}</option>
+                                {% endfor %}    </select>
                                             </td>
                                         </tr>
                                         <tr>
@@ -322,7 +338,7 @@
                 <div class="col-md-6 col-lg-6 col-xl-5 text-center" id="c1">
                     <p class="text-center" id="t1">Finished adding data?</p>
                 </div>
-                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="login.html" id="btn-logout">Logout</a></div>
+                <div class="col-5 col-sm-6 col-md-2 col-lg-2 col-xl-3" id="c1"><a class="btn btn-primary" role="button" href="/logout/" id="btn-logout">Logout</a></div>
             </div>
             <p></p>
         </div>

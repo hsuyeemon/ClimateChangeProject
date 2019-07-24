@@ -4,11 +4,13 @@ from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import Country
 from .models import Temperature
+from .models import Year
 from .form import TemperatureForm
 from .models import Admin
 from .form import AdminForm
 from neomodel import db
 import json
+from datetime import datetime
 
 
 # Include the `fusioncharts.py` file which has required functions to embed the charts in html page
@@ -55,7 +57,7 @@ def login(request):
 def admin(request):
 
 	if request.session['username'] == "admin":
-		return render(request,"admin.html")
+		return render(request,"admin.html",{'countries':load_countries()})
 	else:
 		return HttpResponseRedirect('/login/?submitted=False')
 
@@ -78,7 +80,8 @@ def add_temperature(request):
 			temperature = form.data['temperature']
 			print(temperature)
 			date = form.data['date']
-			dt = form.data['date']
+			dt = datetime.strptime(date, '%Y-%m-%d').strftime('%m/%d/%Y')
+			print(dt)
 			country = form.data['country']
 			#country = "Myanmar"
 			y = date[0:4]
@@ -122,7 +125,7 @@ def add_temperature(request):
 		form = Temperature()
 		if 'submitted' in request.GET:
 			submitted = True
-	return render(request, 'admin.html', {'form': form,'submitted': submitted})
+	return render(request, 'admin.html', {'countries':load_countries(),' form': form,'submitted': submitted})
 	#return HttpResponse("add_temperature")
 
 def add_query(y,d,m,temperature,date,country):
@@ -144,27 +147,29 @@ def update_temperature(request):
 		data = request.POST.copy()
 		print(data)
 		date = data.get('in-datetime')
+		dt = datetime.strptime(date, '%Y-%m-%d').strftime('%m/%d/%Y')
+			
 		country = data.get('country')
 
 		if data.get('temperature') != "":
 			print("update")
 
-			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) SET tem.Temperature= "+str(data.get('new_temperature'))+" RETURN tem"
+			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+dt+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) SET tem.Temperature= "+str(data.get('new_temperature'))+" RETURN tem"
 			results,meta = db.cypher_query(query)
 			return HttpResponseRedirect('/update_temperature/?updated=True')
 
 
 
 		else :
-			result = get_temperature(date,country)
-			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
+			result = get_temperature(dt,country)
+			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+dt+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
 			results,meta = db.cypher_query(query)
-			return render(request,'admin.html', {'country':country,'date':date,'old_temperature':result})
+			return render(request,'admin.html', {'countries':load_countries(),'country':country,'date':date,'old_temperature':result})
 
 	else:
 		if 'updated' in request.GET:
 			updated = True
-	return render(request, 'admin.html', {'updated': updated})
+	return render(request, 'admin.html', {'countries':load_countries(),'updated': updated})
 	
 
 def delete_temperature(request):
@@ -174,6 +179,8 @@ def delete_temperature(request):
 		data = request.POST.copy()
 		print(data)
 		date = data.get('de_datetime')
+		dt = datetime.strptime(date, '%Y-%m-%d').strftime('%m/%d/%Y')
+			
 		country = data.get('de_country')
 
 
@@ -199,15 +206,15 @@ def delete_temperature(request):
 
 		else :
 			print("Else")
-			result = get_temperature(date,country)
-			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+date+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
+			result = get_temperature(dt,country)
+			query = "WITH '"+country+"' as c MATCH (country :Country) where country.name=c WITH country,'"+dt+"' as d MATCH (tem :Avg_temperature) where tem.Date = d WITH country,tem MATCH (tem)-[r:TEMP_OF]->(country) RETURN tem.Temperature"
 			results,meta = db.cypher_query(query)
-			return render(request,'admin.html', {'de_country':country,'de_datetime':date,'de_temp':result})
+			return render(request,'admin.html', {'countries':load_countries(),'de_country':country,'de_datetime':date,'de_temp':result})
 
 	else:
 		if 'deleted' in request.GET:
 			deleted = True
-	return render(request, 'admin.html', {'deleted': deleted})
+	return render(request, 'admin.html', {'countries':load_countries(),'deleted': deleted})
 
 def charts(request):
 	#print(request)
@@ -226,7 +233,7 @@ def charts(request):
 			data,caption,subCaption = prepare_linechart(country,year1,year2)
 			line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
 
-			return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
+			return render(request, 'charts.html', {'countries':load_countries(),'years':load_years(),'output1' : line.render(),'output2' : column2d.render()})
 
 		else :
 			year = data.get('year')
@@ -235,7 +242,7 @@ def charts(request):
 			#params(type,name,width,height,chart id, data type)
 			column2d = generate_chart("column2d","Chart-2","chart-2",caption,subCaption,"Countries",data)
 			#print(column2d)
-			return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
+			return render(request, 'charts.html', {'countries':load_countries(),'years':load_years(),'output1' : line.render(),'output2' : column2d.render()})
 	else:
 		#form = Country()
 		if 'submitted' in request.GET:
@@ -243,11 +250,11 @@ def charts(request):
 
 		data,caption,subCaption = prepare_linechart()
 		line = generate_chart("line","Chart-1","chart-1",caption,subCaption,"Years",data)
-
+		#print(load_years())
 		data,caption,subCaption = prepare_column2d()
 		#params(type,name,width,height,chart id, data type)
 		column2d = generate_chart("column2d","Chart-2","chart-2",caption,subCaption,"Countries",data)
-		return render(request, 'charts.html', {'output1' : line.render(),'output2' : column2d.render()})
+		return render(request, 'charts.html', {'countries':load_countries(),'years':load_years(),'output1' : line.render(),'output2' : column2d.render()})
 
 
 def generate_chart(ctype,chart_name,chart_id,caption,subCaption,x_axis,data):
@@ -319,3 +326,18 @@ def prepare_linechart(country="Myanmar",year1 = 1999,year2 = 2013):
 
 	return year_tavg_map,caption,subCaption
 
+
+
+def load_countries():
+   	#countries = Country.objects.filter(country_id=country_id).order_by('name')
+    #return render(request, 'hr/city_dropdown_list_options.html', {'cities': cities})
+
+    countries = Country.nodes.order_by('name')
+    return countries
+    #return render(request,'charts.html',{'countries':countries})
+
+def load_years():
+
+	years = Year.nodes.order_by('value')
+	print(years)
+	return years

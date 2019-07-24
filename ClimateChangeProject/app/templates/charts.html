@@ -17,7 +17,25 @@
     <link rel="stylesheet" href="{% static 'css/Navigation-with-Button.css' %}">
     <link rel="stylesheet" href="{% static 'css/Registration-Form-with-Photo.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <script type="text/javascript">
+    function year_validate()
+    {
+        var year_1=document.getElementById('in-year1');
+        var y1 = year_1.options[year_1.selectedIndex].text;
+        var year_2=document.getElementById('in-year2');
+        var y2 = year_2.options[year_2.selectedIndex].text;
+        if(y1>=y2)
+        {
+            alert("Please fills again!");
+            return false;
+        }
+        return true;
+    }
+    
+</script>
 </head>
+
 
 <body>
     <nav class="navbar navbar-light navbar-expand-md">
@@ -39,7 +57,7 @@
     </nav>
     <div id="Main">
         <div class="jumbotron" id="j1">
-            <h1>Line Chart</h1>
+            <h1>Average Land Temperature in a country</h1>
             <div class="table-responsive">
                 <form action="" method="post" novalidate>
                     <input type="hidden" name="chart-type" value="line">
@@ -52,16 +70,32 @@
                         <tr>
                             <td id="t2">Year</td>
                             <td>
-                                <p id="t2">From</p><input class="border rounded border-primary" type="dropdown" name="in-year1" required="" id="in"></td>
+                              From
+                             <select class="border rounded border-primary" name="in-year1" id="from">
+                                <option value="">select year</option>
+                                {% for year in years %}
+                                <option value="{{ year.value }}">{{ year.value }}</option>
+                                {% endfor %}    </select>
+                            </td>
                             <td>
-                                <p id="t2">To</p><input class="border rounded border-primary" type="dropdown" name="in-year2" required="" id="in"></td>
+                                To
+                             <select href= "/load_countries/"class="border rounded border-primary" name="in-year2" id="to">
+                                <option value="">select year</option>
+                                {% for year in years %}
+                                <option value="{{ year.value }}">{{ year.value }}</option>
+                                {% endfor %}    </select></td>
                         </tr>
                         <tr>
                             <td id="t2">Country</td>
                             <td>
-                                <div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
+                                <!--div class="dropdown"><button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" id="in">Dropdown </button>
                                     <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">First Item</a><a class="dropdown-item" role="presentation" href="#">Second Item</a><a class="dropdown-item" role="presentation" href="#">Third Item</a></div>
-                                </div>
+                                </div-->
+                                <select href= "/load_countries/"class="border rounded border-primary" name="country" id="Country" required="">
+                                <option value="">select country</option>
+                                {% for country in countries %}
+                                <option value="{{ country.name }}">{{ country.name }}</option>
+                                {% endfor %}    </select>
                             </td>
                         </tr>
                         <tr>
@@ -83,7 +117,7 @@
             <p></p>
         </div>
         <div class="jumbotron" id="j3">
-            <h1>Column Chart</h1>
+            <h1>Average Land Temperature in Asean countries</h1>
             <div class="table-responsive">
                 <form action="" method="post" novalidate>
                 <input type="hidden" name="chart-type" value="Column">
@@ -94,8 +128,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td id="t2">Year</td>
-                            <td colspan="2"><input class="border rounded border-primary" type="dropdown" name="year" required="" id="in"></td>
+                            <td id="t2">Year</td><td>
+                            <select class="border rounded border-primary" name="year" id="from">
+                                <option value="">select year</option>
+                                {% for year in years %}
+                                <option value="{{ year.value }}">{{ year.value }}</option>
+                                {% endfor %}    </select></td>
                             <td></td>
                         </tr>
                         <tr></tr>
@@ -105,9 +143,9 @@
                         <tr>
                             <td class="bg-white border rounded-0 border-primary" colspan="3"><div id="chart-2">{{ output2|safe }}</div></td>
                         </tr>
-                        <tr>
+                        <!--tr>
                             <td colspan="3"><a class="btn btn-primary" role="button" href="#" id="in-export">Export</a></td>
-                        </tr>
+                        </tr-->
                     </tbody>
                 </table>
                 {% csrf_token %}
