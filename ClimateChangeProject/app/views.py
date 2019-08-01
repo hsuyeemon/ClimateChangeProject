@@ -99,7 +99,7 @@ def add_temperature(request):
 
 
 			if len(yy)!= 0:
-				results = add_query(y,d,m,temperature,date,country)
+				results = add_query(y,d,m,temperature,dt,country)
 				if len(results)!=0:
 					return HttpResponseRedirect('/add_temperature/?submitted=True')
 
@@ -117,7 +117,7 @@ def add_temperature(request):
 				q3 = "MATCH (year:Year)-[:CONTAINS]->(month) WITH year, month ORDER BY year.value, month.value WITH collect(month) AS months FOREACH(i in RANGE(0, length(months)-2) | FOREACH(month1 in [months[i]] | FOREACH(month2 in [months[i+1]] |CREATE UNIQUE (month1)-[:NEXT]->(month2))));"
 				db.cypher_query(q3)
 
-				results = add_query(y,d,m,temperature,date,country)
+				results = add_query(y,d,m,temperature,dt,country)
 				if len(results)!=0:
 					return HttpResponseRedirect('/add_temperature/?submitted=True')
 
