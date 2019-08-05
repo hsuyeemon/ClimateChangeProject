@@ -1,0 +1,28 @@
+Requirements
+
+python 3.7.0
+django 2.2.2
+neo4j 
+neomodel 
+
+Notes:
+
+Django and Neomodel Setups References
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=97062405-9187-4e53-8e1a-b0011711ed86&s=s513&
+
+Django Template
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=232de99f-f3d6-4897-917c-481971249f21&s=s513&
+
+Django Admin
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=4c0fa59d-2222-4754-a0eb-02f3b75a30c0&s=s513&
+
+Django Form
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=e4df193b-593c-4042-abe7-704fe046d97d&s=s513&
+
+Working codes
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=40edf9d8-541a-4afc-a084-c87c72189aaa&s=s513&
+
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=a286ce29-104b-43ef-9f7c-fc5e092e52d0&s=s513&
+
+Neo4j Database Schema Ideas
+https://www.evernote.com/client/web#?anb=true&b=b1137982-4caf-49ed-921a-8a8d41995c62&n=08b4af86-cd12-49ba-8951-cea15565345b&s=s513&
