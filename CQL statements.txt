@@ -1,0 +1,55 @@
+//Create Time Tree Indexes
+
+
+CREATE INDEX ON :Year(value);
+CREATE INDEX ON :Month(value);
+CREATE INDEX ON :Day(value);
+
+//Create index for temperature
+
+CREATE INDEX ON :Avg_temperature(value);
+CREATE CONSTRAINT ON (t:Avg_temperature) ASSERT (t.Date, t.country) IS NODE KEY
+CREATE INDEX ON :Country(value);
+
+//Create Time Tree with Day Depth :Year start from 1990 to 2013
+
+WITH range(1990, 2013) AS years, range(1,12) AS months 
+FOREACH(year IN years | 
+    CREATE (y:Year {value: year}) 
+    FOREACH(month IN months | 
+        CREATE (m:Month {value: month}) 
+        MERGE (y)-[:CONTAINS]->(m)))
+
+
+//Connect Months Sequentially
+MATCH (year:Year)-[:CONTAINS]->(month)
+WITH year, month
+ORDER BY year.value, month.value
+WITH collect(month) AS months
+FOREACH(i in RANGE(0, length(months)-2) |
+    FOREACH(month1 in [months[i]] |
+        FOREACH(month2 in [months[i+1]] |
+            CREATE UNIQUE (month1)-[:NEXT]->(month2))));
+
+
+//Import TEMPERATURE DATA
+USING PERIODIC COMMIT 1000 //month,day,year
+LOAD CSV WITH HEADERS FROM "file:///Temperature.csv" AS row WITH row
+//Exclude Rows with Incomplete Key Data Elements
+WHERE row.Temperature IS NOT NULL AND row.Country IS NOT NULL AND row.Date IS NOT NULL
+
+
+WITH row, toInt(SUBSTRING(row.Date,6, 4)) AS y
+MATCH (year:Year {value: y})
+WITH row, year, toInt(SUBSTRING(row.Date, 0, 2)) AS m
+MATCH (year)-[:CONTAINS]->(month:Month {value: m})
+WITH row, month, toInt(SUBSTRING(row.Date, 3,2)) AS d
+CREATE (day:Day {value : d})
+CREATE (month)-[:CONTAINS]->(day)
+WITH row,month,day
+WITH row, day MERGE(temp:Avg_temperature {Date : row.Date,Temperature : row.Temperature,country : row.Country})
+MERGE (country:Country {name: row.Country})
+MERGE (temp)-[:TEMP_OF]->(country)
+MERGE (temp)-[:TEMP_AT]->(day)
+return temp;
+
